@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-def sila(F, m):
+def jednoliko_gibanje(F, m):
     a=F/m
 
     vrijeme=10
@@ -32,5 +32,3 @@ def sila(F, m):
     axs[1].set(ylabel='v [m/s]')
     axs[2].set(ylabel='s [m]')
     plt.show()
-
-sila(5, 7)
