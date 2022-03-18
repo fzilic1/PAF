@@ -2,44 +2,48 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Particle:
-    def __init__(self, v_0, theta, x_0, y_0):
-        self.v_0=v_0
-        self.theta=theta
-        self.x_0=x_0
-        self.y_0=y_0
+    def __init__(self):
+        self.t=[]
+        self.vx=[]
+        self.vy=[]
+        self.x=[]
+        self.y=[]
+        self.ax=[]
+        self.ay=[]
+        self.dt=0
     
-    def set_initial_conditions(self, v_0, theta, x_0, y_0):
-        self.v_0=v_0
-        self.theta=theta
-        self.x_0=x_0
-        self.y_0=y_0
+    def set_initial_conditions(self, v_0, theta, x_0, y_0, t):
+        self.t.append(0)
+        self.x.append(x_0)
+        self.y.append(y_0)
+        self.vx.append(v_0*np.cos(theta*np.pi/180))
+        self.vy.append(v_0*np.sin(theta*np.pi/180))
+        self.ax.append(0)
+        self.ay.append(-9.81)
+        self.dt=t
 
     def reset(self):
-        self.v_0=0
-        self.theta=0
-        self.x_0=0
-        self.y_0=0
+        self.__init__()
 
     def __move(self):
-        dt=0.05
-        self.x_0+=v_0*np.cos(self.theta*180/np.pi())*dt
-        self.y_0+=v_0*np.sin(self.theta*180/np.pi())*dt
+        self.t.append(self.t[-1]+self.dt)
+        self.x.append(self.x[-1]+self.vx[-1]*self.dt)
+        self.y.append(self.y[-1]+self.vy[-1]*self.dt)
+        self.vx.append(self.vx[-1]+self.ax[-1]*self.dt)
+        self.vy.append(self.vy[-1]+self.ay[-1]*self.dt)
+        self.ax.append(0)
+        self.ay.append(-9.81)
+
 
     def range(self):
-        while self.y_0>0:
-            __move(self)
+        while self.y[-1]>=0:
+            self.__move()
         
-        return self.x_0
+        return self.x[-1]
 
     def plot_trajectory(self):
-        x=[]
-        y=[]
-        while self.y_0>0:
-            x.append(self.x_0)
-            y.append(self.y_0)
-            __move(self)
-        
-        plt.plot(x, y)
+        self.range()
+        plt.plot(self.x, self.y)
         plt.xlabel("x [m]")
         plt.ylabel("y [m]")
         plt.show()
