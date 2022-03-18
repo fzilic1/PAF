@@ -48,3 +48,45 @@ class Particle:
         plt.ylabel("y [m]")
         plt.show()
 
+    def total_time(self):
+        self.range()
+        return self.t[-1]
+
+    def max_speed(self):
+        vmax=0
+        self.range()
+        for i in range(len(self.vx)):
+            V=np.sqrt(self.vx[i]**2+self.vy[i]**2)
+            if V>vmax:
+                vmax=V
+        return vmax
+
+    def velocity_to_hit_target(self, theta, Cx, Cy, r, t):
+        v0=0
+        V=0
+        while V==0:
+            self.set_initial_conditions(v0, theta, 0, 0, t)
+            self.range()
+            for i in range(len(self.x)):
+                DI=np.sqrt((Cx-self.x[i])**2+(Cy-self.y[i])**2)
+                if DI<=r:
+                    V=v0
+                    break;
+            self.reset()
+            v0+=0.1
+        return V
+
+    def angle_to_hit_target(self, v0, Cx, Cy, r, t):
+        theta=0
+        THETA=0
+        while THETA==0:
+            self.set_initial_conditions(v0, theta, 0, 0, t)
+            self.range()
+            for i in range(len(self.x)):
+                DI=np.sqrt((Cx-self.x[i])**2+(Cy-self.y[i])**2)
+                if DI<=r:
+                    THETA=theta
+                    break;
+            self.reset()
+            theta+=1
+        return THETA
