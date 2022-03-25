@@ -1,19 +1,39 @@
-def dev(f, x, h, method):
-    if method=='two-point':
+def dev(f, x, h=0.01, method='3'):
+    if method=='2':
         return ((f(x+h)-f(x))/h)
     else:
         return ((f(x+h)-f(x-h))/(2*h))
 
-def devrange(f, a, b, N, h, method):
+def devrange(f, a, b, h=0.01, method='3'):
     t=[]
     dt=[]
     i=a
-    step=(b-a)/N
 
-    while i <=b:
+    while i <= b:
         t.append(i)
         dt.append(dev(f, i, h, method))
-        i+=step
+        i+=h
 
     return [t, dt]
+
+def intlim(f, a, b, N):
+    dx=(b-a)/N
     
+    i=a
+    F_l=0
+    while i < b:
+        F_l+=f(i)*dx
+        i+=dx
+        i=round(i, 3)
+    
+    i=a+dx
+    F_u=0
+    while i <= b:
+        F_u+=f(i)*dx
+        i+=dx
+        i=round(i, 3)
+
+    return F_l, F_u
+
+def numint(f, a, b, N):
+    return (b-a)*(f(a)+f(b))*0.5
