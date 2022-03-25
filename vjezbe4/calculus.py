@@ -24,16 +24,22 @@ def intlim(f, a, b, N):
     while i < b:
         F_l+=f(i)*dx
         i+=dx
-        i=round(i, 3)
+        i=round(i, 7)
     
     i=a+dx
     F_u=0
     while i <= b:
         F_u+=f(i)*dx
         i+=dx
-        i=round(i, 3)
+        i=round(i, 7)
 
     return F_l, F_u
 
 def numint(f, a, b, N):
-    return (b-a)*(f(a)+f(b))*0.5
+    dx=(b-a)/N
+    i=a
+    F=dx*0.5*(f(a)+f(b))
+    while i <= b:
+        F+=dx*f(i)
+        i+=dx
+    return F
