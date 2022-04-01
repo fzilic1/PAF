@@ -24,19 +24,31 @@ class HarmonicOscilator:
         self.__init__()
 
     def __move(self):
+        self.ax.append(-(self.k/self.m)*self.x[-1])
         self.t.append(self.t[-1]+self.dt)
-        self.ax.append(self.ax[-1]-(self.k/self.m)*self.x[-1])
         self.vx.append(self.vx[-1]+self.ax[-1]*self.dt)
         self.x.append(self.x[-1]+self.vx[-1]*self.dt)
 
-    def plot_xt(self):
-        max=0
-        i=0
-        while i==0:
+    def period(self, k, m, x_0, v_0, a_0, dt):
+        self.initial(k, m, x_0, v_0, a_0, dt)
+        T=0
+        self.__move()
+        if self.x[-1] >=0:
+            while abs(self.x[-1]) == self.x[-1]:
+                self.__move()
+            while abs(self.x[-1]) != self.x[-1]:
+                self.__move()
+                T+=dt
+        elif self.x[-1] < 0:
+            while abs(self.x[-1]) != self.x[-1]:
+                self.__move()
+            while abs(self.x[-1]) == self.x[-1]:
+                self.__move()
+                T+=dt
+        return(2*T)
+
+    def oscilate(self, R):
+        while self.t[-1] <= R:
             self.__move()
-            if self.x[-1] > max:
-                max=self.x[-1]
-            elif self.x[-1]==max:
-                plt.plot(self.t, self.x)
-                i=1
-        plt.show()
+            if self.x[-1]==self.x[0]:
+                i+=1
