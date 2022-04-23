@@ -15,6 +15,6 @@ void kruznica(float cx, float cy, float r, float x, float y){
 }
 
 int main(){
-    kruznica(2.4, -1.1, 5, 10, 0);
+    kruznica(2.4, -1.1, 5, 2, 0);
     return 0;
 }

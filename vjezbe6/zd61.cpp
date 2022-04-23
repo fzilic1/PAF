@@ -7,6 +7,6 @@ void pravac(float x1, float y1, float x2, float y2){
     }
 
 int main(){
-    pravac(2.3, 4.6 , -2.3, 4);
+    pravac(1, 3.4 , 2, -2);
     return 0;
 }
