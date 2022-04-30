@@ -10,7 +10,7 @@ class HarmonicOscillator{
         HarmonicOscillator(double x0, double v0, double k, double m, double step=0.001);
         ~HarmonicOscillator();
 
-        void oscillate(double x0, double v0, double to);
+        void oscillate(double to);
         double period();
 
 };
