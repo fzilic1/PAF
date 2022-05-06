@@ -35,9 +35,17 @@ class Projectile:
     def reset(self):
         self.__init__()
 
+    def __acc(self, x, y, vx, vy, t ):
+        a=[]
+        a.append((-np.sign(vx)*self.rho*self.C_d*self.A*np.power(vx, 2))/(2*self.m))
+        a.append(-9.81-(np.sign(vy)*self.rho*self.C_d*self.A*np.power(vy, 2))/(2*self.m))
+        return a
+
     def __move(self):
-        self.ax.append(-np.sign(self.vx[-1])*self.rho*self.C_d*self.A*np.power(self.vx[-1], 2)/(2*self.m))
-        self.ay.append(-9.81-np.sign(self.vy[-1])*self.rho*self.C_d*self.A*np.power(self.vy[-1], 2)/(2*self.m))
+        a=self.__acc(self.x[-1], self.y[-1], self.vx[-1], self.vy[-1], self.t[-1])
+
+        self.ax.append(a[0])
+        self.ay.append(a[1])
         self.vx.append(self.vx[-1]+self.ax[-1]*self.dt)
         self.vy.append(self.vy[-1]+self.ay[-1]*self.dt)
         self.x.append(self.x[-1]+self.vx[-1]*self.dt)
@@ -45,33 +53,34 @@ class Projectile:
         self.t.append(self.t[-1]+self.dt)
     
     def __rungekutta(self):
-        self.ax.append(-np.sign(self.vx[-1])*self.rho*self.C_d*self.A*np.power(self.vx[-1], 2)/(2*self.m))
-        self.ay.append(-9.81-np.sign(self.vy[-1])*self.rho*self.C_d*self.A*np.power(self.vy[-1], 2)/(2*self.m))
+        a=self.__acc(self.x[-1], self.y[-1], self.vx[-1], self.vy[-1], self.t[-1])
+        self.ax.append(a[0])
+        self.ay.append(a[1])
         
         k1v_x=self.ax[-1]*self.dt
         k1x=self.vx[-1]*self.dt
-        k2v_x=(-np.sign(self.vx[-1]+k1v_x/2)*self.rho*self.C_d*self.A*np.power(self.vx[-1]+k1v_x/2, 2)/(2*self.m))*self.dt
+        k1v_y=self.ay[-1]*self.dt
+        k1y=self.vy[-1]*self.dt
+
+        k2v_x=(self.__acc(self.x[-1]+k1x/2, self.y[-1]+k1y/2, self.vx[-1]+k1v_x/2, self.vy[-1]+k1v_y/2, self.t[-1]+self.dt/2)[0])*self.dt
         k2x=(self.vx[-1]+k1v_x/2)*self.dt
-        k3v_x=(-np.sign(self.vx[-1]+k2v_x/2)*self.rho*self.C_d*self.A*np.power(self.vx[-1]+k2v_x/2, 2)/(2*self.m))*self.dt
+        k2v_y=(self.__acc(self.x[-1]+k1x/2, self.y[-1]+k1y/2, self.vx[-1]+k1v_x/2, self.vy[-1]+k1v_y/2, self.t[-1]+self.dt/2)[1])*self.dt
+        k2y=(self.vy[-1]+k1v_y/2)*self.dt
+
+        k3v_x=(self.__acc(self.x[-1]+k2x/2, self.y[-1]+k2y/2, self.vx[-1]+k2v_x/2, self.vy[-1]+k2v_y/2, self.t[-1]+self.dt/2)[0])*self.dt
         k3x=(self.vx[-1]+k2v_x/2)*self.dt
-        k4v_x=(-np.sign(self.vx[-1]+k3v_x)*self.rho*self.C_d*self.A*np.power(self.vx[-1]+k3v_x, 2)/(2*self.m))*self.dt
+        k3v_y=(self.__acc(self.x[-1]+k2x/2, self.y[-1]+k2y/2, self.vx[-1]+k2v_x/2, self.vy[-1]+k2v_y/2, self.t[-1]+self.dt/2)[1])*self.dt
+        k3y=(self.vy[-1]+k2v_y/2)*self.dt
+        
+        k4v_x=(self.__acc(self.x[-1]+k3x/2, self.y[-1]+k3y/2, self.vx[-1]+k3v_x/2, self.vy[-1]+k3v_y/2, self.t[-1]+self.dt/2)[0])*self.dt
         k4x=(self.vx[-1]+k3v_x)*self.dt
+        k4v_y=(self.__acc(self.x[-1]+k3x/2, self.y[-1]+k3y/2, self.vx[-1]+k3v_x/2, self.vy[-1]+k3v_y/2, self.t[-1]+self.dt/2)[1])*self.dt
+        k4y=(self.vy[-1]+k3v_y)*self.dt
 
         self.vx.append(self.vx[-1]+(1/6)*(k1v_x+2*k2v_x+2*k3v_x+k4v_x))
         self.x.append(self.x[-1]+ (1/6)*(k1x+2*k2x+2*k3x+k4x))
-        
-        k1v_y=self.ay[-1]*self.dt
-        k1y=self.vy[-1]*self.dt
-        k2v_y=(-np.sign(self.vy[-1]+k1v_y/2)*self.rho*self.C_d*self.A*np.power(self.vy[-1]+k1v_y/2, 2)/(2*self.m))*self.dt
-        k2y=(self.vy[-1]+k1v_y/2)*self.dt
-        k3v_y=(-np.sign(self.vy[-1]+k2v_y/2)*self.rho*self.C_d*self.A*np.power(self.vy[-1]+k2v_y/2, 2)/(2*self.m))*self.dt
-        k3y=(self.vy[-1]+k2v_y/2)*self.dt
-        k4v_y=(-np.sign(self.vy[-1]+k3v_y)*self.rho*self.C_d*self.A*np.power(self.vy[-1]+k3v_y, 2)/(2*self.m))*self.dt
-        k4y=(self.vy[-1]+k3v_y)*self.dt
-
         self.vy.append(self.vy[-1]+(1/6)*(k1v_y+2*k2v_y+2*k3v_y+k4v_y))
         self.y.append(self.y[-1]+ (1/6)*(k1y+2*k2y+2*k3y+k4y))
-        
         
         
         self.t.append(self.t[-1]+self.dt)
@@ -91,14 +100,14 @@ class Projectile:
     def plot_trajectory(self, method='E'):
         if method=='RK':
             self.range('RK')
-            plt.plot(self.x, self.y)
+            plt.plot(self.x, self.y, label='Runge-Kutta')
             plt.xlabel("x [m]")
             plt.ylabel("y [m]")
-            plt.show()
+            plt.legend()
 
         else:
             self.range()
-            plt.plot(self.x, self.y)
+            plt.plot(self.x, self.y, label='Euler')
             plt.xlabel("x [m]")
             plt.ylabel("y [m]")
-            plt.show()
+            plt.legend()
