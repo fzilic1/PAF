@@ -119,7 +119,7 @@ class Projectile:
     def target(self, v_0, x_0, y_0, m, rho, C_d, A, cx, cy, r, shape='n', t=0.001):
         i=0
         theta=1
-        while i==0:
+        while i==0 and theta < 90:
             self.set_initial_conditions(v_0, theta, x_0, y_0, m, rho, C_d, A, shape, t)
             while self.y[-1]>=0:
                 self.__rungekutta()
@@ -127,4 +127,13 @@ class Projectile:
                     i=1
             self.reset()
             theta+=1
+        self.set_initial_conditions(v_0, theta, x_0, y_0, m, rho, C_d, A, shape, t)
+        
+        
+        figure, axes=plt.subplots()
+        self.plot_trajectory('RK')
+        cc=plt.Circle((cx, cy), r)
+        axes.set_aspect(1)
+        axes.add_artist(cc)
+        plt.show()
         return theta
