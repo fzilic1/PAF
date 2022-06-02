@@ -1,6 +1,6 @@
 import numpy as np
 
-class Object:
+class Planet:
     def __init__(self):
         self.x=[]
         self.y=[]
