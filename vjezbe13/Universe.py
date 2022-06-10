@@ -3,7 +3,6 @@ from numpy import linalg as LA
 import matplotlib.pyplot as plt
 import Planet as pl
 from matplotlib.animation import FuncAnimation
-from itertools import count
 
 class Universe:
     def __init__(self):
@@ -58,9 +57,9 @@ class Universe:
         ax.set_aspect(1)
         line, = ax.plot([], [], lw=2)
         
-        plotlays, plotcols = [5], ["yellow","blue", "red", "violet", "orange"]
+        plotlays, plotcols = [6], ["yellow","blue", "red", "violet", "orange", "brown"]
         lines=[]
-        for index in range(5):
+        for index in range(6):
             lobj = ax.plot([],[],lw=2,color=plotcols[index])[0]
             lines.append(lobj)
 
@@ -74,6 +73,7 @@ class Universe:
         x3data, y3data = [], []
         x4data, y4data = [], []
         x5data, y5data = [], []
+        x6data, y6data = [], []
 
         def anima(i):
             x=self.planets[0].x[i]
@@ -101,8 +101,13 @@ class Universe:
             x5data.append(x)
             y5data.append(y)
 
-            xlist=[x1data, x2data, x3data, x4data, x5data]
-            ylist=[y1data, y2data, y3data, y4data, y5data]
+            x=self.planets[5].x[i]
+            y=self.planets[5].y[i]
+            x6data.append(x)
+            y6data.append(y)
+
+            xlist=[x1data, x2data, x3data, x4data, x5data, x6data]
+            ylist=[y1data, y2data, y3data, y4data, y5data, x6data]
             for lnum,line in enumerate(lines):
                 line.set_data(xlist[lnum], ylist[lnum])
 
@@ -110,5 +115,3 @@ class Universe:
 
         anim=FuncAnimation(fig, anima, init_func=init, frames=4000, interval=20, blit='True')
         plt.show()
-
-        
