@@ -2,6 +2,8 @@ import numpy as np
 from numpy import linalg as LA
 import matplotlib.pyplot as plt
 import Planet as pl
+from matplotlib.animation import FuncAnimation
+from itertools import count
 
 class Universe:
     def __init__(self):
@@ -40,9 +42,15 @@ class Universe:
         
         fig, axs=plt.subplots(1)
         for i in range(self.p+1):
-            axs.plot(self.planets[i].x, self.planets[i].y)
-            circle=plt.Circle((self.planets[i].x[-1], self.planets[i].y[-1]), 0.5*np.power(10.0, 10))
+            axs.plot(self.planets[i].x, self.planets[i].y, color=self.planets[i].color)
+            circle=plt.Circle((self.planets[i].x[-1], self.planets[i].y[-1]), 0.5*np.power(10.0, 10), color=self.planets[i].color)
             axs.add_patch(circle)
         
         axs.set_aspect(1)
         plt.show()
+
+    def animate(self, T):
+        while self.planets[self.p].t[-1] < T:
+            self.__move()
+
+        
