@@ -49,66 +49,26 @@ class Universe:
         axs.set_aspect(1)
         plt.show()
 
-    def animate(self, T):
+    def animate(self, T, frame):
         while self.planets[self.p].t[-1] < T:
             self.__move()
 
-        fig = plt.figure()
-        ax = plt.axes(xlim=(-2.5*np.power(10.0, 11), 2.5*np.power(10.0, 11)), ylim=(-2.5*np.power(10.0, 11), 2.5*np.power(10.0, 11)))
+        fig, ax=plt.subplots()
+        ax.set_xlim([-2.5*np.power(10.0, 11), 2.5*np.power(10.0, 11)])
+        ax.set_ylim([-2.5*np.power(10.0, 11), 2.5*np.power(10.0, 11)])
         ax.set_aspect(1)
-        line, = ax.plot([], [], lw=2)
-        
-        plotlays, plotcols = [5], ["yellow","blue", "red", "violet", "orange"]
-        lines=[]
-        for index in range(5):
-            lobj = ax.plot([],[],lw=2,color=plotcols[index])[0]
-            lines.append(lobj)
+        def anima1(i):
+            ax.clear()
+            ax.set_xlim([-2.5*np.power(10.0, 11), 2.5*np.power(10.0, 11)])
+            ax.set_ylim([-2.5*np.power(10.0, 11), 2.5*np.power(10.0, 11)])
+            ax.set_aspect(1)
+            for j in range(len(self.planets)):
+                ax.scatter(x=self.planets[j].x[i], y=self.planets[j].y[i], c=self.planets[j].color, lw=1)
 
-        def init():
-            for line in lines:
-                line.set_data([],[])
-            return lines
+        def anima2(i):
+            for j in range(len(self.planets)):
+                ax.plot(self.planets[j].x[:i], self.planets[j].y[:i], color=self.planets[j].color)
 
-        x1data, y1data = [], []
-        x2data, y2data = [], []
-        x3data, y3data = [], []
-        x4data, y4data = [], []
-        x5data, y5data = [], []
-
-        def anima(i):
-            x=self.planets[0].x[i]
-            y=self.planets[0].y[i]
-            x1data.append(x)
-            y1data.append(y)
-
-            x=self.planets[1].x[i]
-            y=self.planets[1].y[i]
-            x2data.append(x)
-            y2data.append(y)
-
-            x=self.planets[2].x[i]
-            y=self.planets[2].y[i]
-            x3data.append(x)
-            y3data.append(y)
-
-            x=self.planets[3].x[i]
-            y=self.planets[3].y[i]
-            x4data.append(x)
-            y4data.append(y)
-            
-            x=self.planets[4].x[i]
-            y=self.planets[4].y[i]
-            x5data.append(x)
-            y5data.append(y)
-
-            xlist=[x1data, x2data, x3data, x4data, x5data]
-            ylist=[y1data, y2data, y3data, y4data, y5data]
-            for lnum,line in enumerate(lines):
-                line.set_data(xlist[lnum], ylist[lnum])
-
-            return lines
-
-        anim=FuncAnimation(fig, anima, init_func=init, frames=4000, interval=20, blit='True')
+        anim1=FuncAnimation(fig, func=anima1, frames=frame, interval=40)
+        anim2=FuncAnimation(fig, func=anima2, frames=frame, interval=40)
         plt.show()
-
-        
