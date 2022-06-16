@@ -96,15 +96,26 @@ class Universe:
                 if a==1:
                     self.planets[5].x[-1]=self.planets[5].x[-2]
                     self.planets[5].y[-1]=self.planets[5].y[-2]
-                if d <= np.power(10.0, 11):
+                if d <= 7.1*np.power(10.0, 9):
                     a=1
             theta+=1
 
-        fig, axs=plt.subplots(1)
-        for i in range(self.p+1):
-            axs.plot(self.planets[i].x, self.planets[i].y, color=self.planets[i].color)
-            circle=plt.Circle((self.planets[i].x[-1], self.planets[i].y[-1]), 0.5*np.power(10.0, 10), color=self.planets[i].color)
-            axs.add_patch(circle)
-        
-        axs.set_aspect(1)
+        fig, ax=plt.subplots()
+        ax.set_xlim([-1.7*np.power(10.0, 11), 3.35*np.power(10.0, 11)])
+        ax.set_ylim([-2.32*np.power(10.0, 11), 3.25*np.power(10.0, 11)])
+        ax.set_aspect(1)
+        def anima1(i):
+            ax.clear()
+            ax.set_xlim([-1.7*np.power(10.0, 11), 3.35*np.power(10.0, 11)])
+            ax.set_ylim([-2.32*np.power(10.0, 11), 3.25*np.power(10.0, 11)])
+            ax.set_aspect(1)
+            for j in range(len(self.planets)):
+                ax.scatter(x=self.planets[j].x[i], y=self.planets[j].y[i], c=self.planets[j].color, lw=1)
+
+        def anima2(i):
+            for j in range(len(self.planets)):
+                ax.plot(self.planets[j].x[:i], self.planets[j].y[:i], color=self.planets[j].color)
+
+        anim1=FuncAnimation(fig, func=anima1, frames=frame, interval=20)
+        anim2=FuncAnimation(fig, func=anima2, frames=frame, interval=20)
         plt.show()
